@@ -63,12 +63,11 @@ def parse_material_assignments(mcnp_input):
 
             assignment[value.strip().replace('"','')] = key.strip().replace('"', '')
         assignments.append(assignment)
-
     return assignments
 material_assignments = parse_material_assignments(mcnp_input)
 
 final_materials = openmc.Materials()
-for assignment in material_assignments:
+for i, assignment in enumerate(material_assignments):
     if 'void' in assignment['Material'].lower():
         continue
     mat_name = assignment['Attila Region Name'].upper()
@@ -77,6 +76,7 @@ for assignment in material_assignments:
 
     new_mat = mcnp_materials[material_id].clone()
     new_mat.name = mat_name
+    new_mat.id = i
     new_mat.set_density(rho_units, float(rho_val))
     final_materials.append(new_mat)
 
